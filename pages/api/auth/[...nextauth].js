@@ -1,8 +1,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider  from "next-auth/providers/credentials";
+// import FacebookProvider from 'next-auth/providers/facebook';
+// import LineProvider from "next-auth/providers/line";
 import User from "../../../models/User";
 import db from "../../../utils/db";
 import bcryptjs from 'bcryptjs';
+
 
 export default NextAuth({
     session: {
@@ -39,6 +42,22 @@ export default NextAuth({
                 }
                 throw new Error('Invalid email or password');
             }
-        })
-    ]
+        }),
+        // FacebookProvider({
+        //     clientId: process.env.FACEBOOK_ID,
+        //     clientSecret: process.env.FACEBOOK_SECRET
+        // }),
+        // LineProvider({
+        //     clientId: process.env.LINE_CLIENT_ID,
+        //     clientSecret: process.env.LINE_CLIENT_SECRET,
+        //     profile: (profile) => {
+        //         return { 
+        //            id: profile.sub,
+        //            name: profile?.name,
+        //            email: profile?.email,
+        //            image: profile.picture
+        //          }
+        //         }
+        //   })
+    ],
 });

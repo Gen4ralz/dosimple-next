@@ -20,7 +20,7 @@ export default function Layout({children, title}) {
     },[cart.cartItems]);
 
     const logoutClickHandler = () => {
-        Cookies.remove('cartItems');
+        Cookies.remove('cart');
         dispatch({ type: 'CART_RESET' });
         signOut({ callbackUrl: '/login' });
     }
