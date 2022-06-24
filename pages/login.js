@@ -54,9 +54,12 @@ export default function LoginScreen() {
             </div>
             <div className='mb-4'>
                 Don&apos;t have an account? &nbsp;
-                <Link href='register'><button className='bg-green-200 rounded px-2'>Register</button></Link>
+                <Link href={`/register?redirect=${redirect || '/'}`}><button className='bg-green-200 rounded px-2'>Register</button></Link>
             </div>
         </form>
+        <div className='mt-8'>
+                <button className='bg-green-500 rounded px-2 text-white w-full py-4' onClick={() => signIn('line')}>LINE Login</button>
+            </div>
     </Layout>
   )
 }

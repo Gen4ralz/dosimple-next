@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import CheckoutWizard from '../components/CheckoutWizard'
 import Layout from '../components/Layout'
@@ -11,6 +11,7 @@ export default function PaymentScreen() {
     const router = useRouter();
     const {state, dispatch} = useContext(Store);
     const {cart} = state;
+    const { paymentMethod } = cart;
     const submitHandler = (e) => {
         e.preventDefault();
         if (!selectedPaymentMethod) {
@@ -18,18 +19,21 @@ export default function PaymentScreen() {
         }
         dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: selectedPaymentMethod });
         Cookies.set('cart', JSON.stringify({...cart, paymentMethod: selectedPaymentMethod,}));
-    router.push('/shipping')
+        router.push('/shipping')
     }
+    useEffect(() => {
+        setSelectedPaymentMethod(paymentMethod || '');
+      }, [paymentMethod, router,]);
   return (
     <Layout title="Payment Method">
         <CheckoutWizard activeStep={1} />
         <form className='mx-auto max-w-screen-md' onSubmit={submitHandler}>
             <h1 className='font-bold text-xl mb-4'>Payment Method</h1>
-            {['Bank Transfer', 'Cash On Delivery', 'Crypto Currency', 'PayPal'].map((payment) => (
-                <div key={payment} className="mb-6">
+            {['Bank Transfer', 'Cash On Delivery', 'Crypto Currencies', 'PayPal'].map((payment) => (
+                <div key={payment} className="mb-6 card py-5 px-4">
                     <input
                         name='paymentMethod'
-                        className='p-2 outline-none focus:ring-0'
+                        className='p-2 outline-none focus:ring-0 '
                         id={payment}
                         type="radio"
                         checked={selectedPaymentMethod === payment}
@@ -41,10 +45,7 @@ export default function PaymentScreen() {
                 </div>
             ))}
             <div className='mt-8 flex justify-between'>
-                <button type='button' className='rounded bg-gray-400 text-white px-8 py-2' onClick={() => router.push('/cart')}>
-                    Back
-                </button>
-                <button className='rounded bg-indigo-700 text-white px-8 py-2'>
+                <button className='w-full rounded bg-indigo-700 text-white px-8 py-2'>
                     Next
                 </button>
             </div>

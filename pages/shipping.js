@@ -95,8 +95,11 @@ export default function ShippingScreen() {
             <div className="text-red-500 ">{errors.phone.message}</div>
           )}
         </div>
-        <div className="mb-4 flex justify-between">
-          <button className="w-full bg-indigo-700 text-white rounded p-2 mt-4">Next</button>
+        <div className="flex justify-between">
+          <button type='button' className='rounded bg-gray-400 text-white px-8 py-2 mt-4' onClick={() => router.push('/payment')}>
+                    Back
+          </button>
+          <button className="bg-indigo-700 text-white rounded px-8 py-2 mt-4">Next</button>
         </div>
       </form>
     </Layout>
