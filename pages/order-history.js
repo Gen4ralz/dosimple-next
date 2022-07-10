@@ -36,7 +36,7 @@ function OrderHistoryScreen() {
     }, [])
   return (
     <Layout title='Order History'>
-        <h1 className='font-bold mb-5'>Order History ({session.user.name})</h1>
+        <h1 className='font-bold mb-5 text-xl'>Order History ({session.user.name})</h1>
         {loading ? (
             <div>Loading...</div>
         ) : error ? (

@@ -23,6 +23,10 @@ a {
   @apply mb-5 block rounded-lg border border-gray-200 shadow-md;
 }
 
+.card-ex {
+  @apply block rounded border border-gray-200;
+}
+
 input,
 select,
 textarea {
@@ -39,4 +43,11 @@ textarea {
 
 .alert-success {
   @apply my-3 rounded-lg bg-green-300 p-3 text-green-700;
+}
+
+.Toastify__toast--success {
+  border: 1px solid #3a9ea5 !important;
+  background: #ffffff !important;
+  color: #000 !important;
+  text-align: center;
 }

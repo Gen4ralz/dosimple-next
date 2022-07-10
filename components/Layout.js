@@ -36,7 +36,7 @@ export default function Layout({children, title}) {
         <header className='sticky top-0 z-10 bg-white'>
             <nav className='flex h-12 justify-between shadow-md items-center px-4'>
                 <Link href='/'>
-                    <a className='text-lg font-bold'>Dosimple</a>
+                    <a className='text-xl font-bold'>Dosimple</a>
                 </Link>
                 <div>
                     <Link href='/cart'>
@@ -50,7 +50,7 @@ export default function Layout({children, title}) {
                     </Link>
                         { status === 'loading' ? ('Loading')
                         : session?.user ? (<Menu as="div" className='relative inline-block'>
-                                                <Menu.Button className='text-indigo-700 font-bold'>{session.user.name}</Menu.Button>
+                                                <Menu.Button className='font-bold'>{session.user.name}</Menu.Button>
                                                 <Menu.Items className="absolute right-0 w-44 original-top-right bg-white shadow-lg">
                                                     <Menu.Item>
                                                         <DropdownLink className="dropdown-link" href="/profile">Profile</DropdownLink>

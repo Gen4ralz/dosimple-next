@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
@@ -7,6 +8,8 @@ import Link from 'next/link';
 import Image from "next/image";
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { toast } from "react-toastify";
+import { DuplicateIcon } from '@heroicons/react/outline'
+
 
 function reducer(state, action) {
     switch (action.type) {
@@ -24,22 +27,48 @@ function reducer(state, action) {
         return { ...state, loadingPay: false, errorPay: action.payload };
       case 'PAY_RESET':
         return { ...state, loadingPay: false, successPay: false, errorPay: '' };
-  
+      case 'UPLOAD_REQUEST':
+        return { ...state, loadingUpload: true, errorUpload: '' }
+      case 'UPLOAD_SUCCESS':
+        return { ...state, loadingUpload: false, errorUpload: ''}
+      case 'UPLOAD_FAIL':
+        return { ...state, loadingUpload: false, errorUpload: action.payload };
       default:
         state;
     }
   }
 
 function OrderScreen() {
-    const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+    const [{isPending}, paypalDispatch ] = usePayPalScriptReducer();
     const { query } = useRouter();
     const orderId = query.id;
 
-    const [{ loading, error, order, successPay, loadingPay }, dispatch] = useReducer(reducer, {
+    const [{ loading, error, order, successPay, loadingPay, loadingUpload }, dispatch] = useReducer(reducer, {
         loading: true,
         order: {},
         error: '',
     });
+
+    const uploadHandler = async (e) => {
+        const file = e.target.files[0];
+        const bodyFormData = new FormData();
+        bodyFormData.append('file', file);
+        try {
+            dispatch({ type: 'UPLOAD_REQUEST' });
+            const { data } = await axios.post(`/api/orders/upload`, bodyFormData, {
+                headers: {'Content-Type': 'multipart/form-data',}
+            });
+            dispatch ({ type: 'UPLOAD_SUCCESS' })
+            toast.success('Slip uploaded successfully');
+        }catch (err) {
+            dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) })
+        }
+    }
+
+    const copyToclipboard = () => {
+        navigator.clipboard.writeText('0748218947')
+        toast.success('Copied!');
+    }
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -82,7 +111,7 @@ function OrderScreen() {
         isPaid,
         paidAt,
         isDelivered,
-        deliverdAt 
+        deliverdAt,
     } = order;
 
 function createOrder(data, actions) {
@@ -198,23 +227,65 @@ function onError(err){
                                 </li>
                                 <li>
                                     <div className="mb-2 flex justify-between">
-                                        <div className="px-2">Total</div>
-                                        <div className="px-2">{totalPrice} Baht</div>
+                                        <div className="px-2 font-bold ">Total</div>
+                                        <div className="px-2 font-bold ">{totalPrice} Baht</div>
                                     </div>
                                 </li>
                                 {!isPaid && (
                                 <li>
-                                    {isPending ? (
-                                    <div>Loading...</div>
-                                    ) : (
-                                        <div className="w-full">
-                                        <PayPalButtons
+                                    { paymentMethod === 'PayPal' && (
+                                        <div>
+                                            {isPending 
+                                            ? <div>Loading...</div> 
+                                            :                                          
+                                            <div className="w-full">
+                                            <PayPalButtons
                                             createOrder={createOrder}
                                             onApprove={onApprove}
                                             onError={onError}
-                                        ></PayPalButtons>
+                                            ></PayPalButtons>
+                                            </div>}
                                         </div>
-                                    )}
+                                    )
+                                    }
+                                    { paymentMethod === 'Bank Transfer'
+                                        ?
+                                            <>
+                                            <div className="card-ex py-4">
+                                                <div className="flex justify-center">
+                                                    <div>
+                                                        <Image src='/images/kbank.png' alt='Kbank' width={50} height={50} />
+                                                    </div>
+                                                    <div className="ml-8">
+                                                    <p>KASIKORN BANK</p>
+                                                    <div className="flex items-center">
+                                                        <p className="font-bold text-green-700 text-xl py-2 mr-8">0748218947</p>
+                                                        <span>
+                                                            <button onClick={copyToclipboard}>
+                                                                <DuplicateIcon width={30} height={30} />
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-xs">Nattapong Panyaakratham</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="card-ex mt-4">
+                                                <p className="font-bold p-2">Proof of Payment</p>
+                                                <div className="flex justify-center items-center w-full">
+                                                    <label htmlFor="dropzone-file" className="flex flex-col w-full m-4 justify-center items-center bg-indigo-300 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-indigo-800">
+                                                    <div className="flex flex-col justify-center items-center py-4 px-4">
+                                                        <svg className="mb-3 w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span></p>
+                                                    </div>
+                                                    <input id="dropzone-file" type="file" className="hidden" onChange={uploadHandler} />
+                                                    </label>
+                                                    {loadingUpload && <div>...Loading</div>}
+                                                </div>
+                                            </div>
+                                            </>
+                                        : null
+                                    }
                                     {loadingPay && <div>Loading...</div>}
                                 </li>
                                 )}

@@ -14,13 +14,13 @@ export default function ProductItem({product}) {
                 />
             </a>
         </Link>
-        <div className='flex flex-col items-center justify-center p-5'>
+        <div className='flex flex-col py-2'>
             <Link href={`/product/${product.slug}`}>
             <a>
                 <h2>{product.name}</h2>
             </a>
             </Link>
-            <p>{product.price}</p>
+            <p className='font-bold'>{product.price}</p>
         </div>
     </div>
   )
