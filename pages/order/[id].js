@@ -49,21 +49,21 @@ function OrderScreen() {
         error: '',
     });
 
-    const uploadHandler = async (e) => {
-        const file = e.target.files[0];
-        const bodyFormData = new FormData();
-        bodyFormData.append('file', file);
-        try {
-            dispatch({ type: 'UPLOAD_REQUEST' });
-            const { data } = await axios.post(`/api/orders/upload`, bodyFormData, {
-                headers: {'Content-Type': 'multipart/form-data',}
-            });
-            dispatch ({ type: 'UPLOAD_SUCCESS' })
-            toast.success('Slip uploaded successfully');
-        }catch (err) {
-            dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) })
-        }
-    }
+    // const uploadHandler = async (e) => {
+    //     const file = e.target.files[0];
+    //     const bodyFormData = new FormData();
+    //     bodyFormData.append('file', file);
+    //     try {
+    //         dispatch({ type: 'UPLOAD_REQUEST' });
+    //         const { data } = await axios.post(`/api/orders/upload`, bodyFormData, {
+    //             headers: {'Content-Type': 'multipart/form-data',}
+    //         });
+    //         dispatch ({ type: 'UPLOAD_SUCCESS' })
+    //         toast.success('Slip uploaded successfully');
+    //     }catch (err) {
+    //         dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) })
+    //     }
+    // }
 
     const copyToclipboard = () => {
         navigator.clipboard.writeText('0748218947')
@@ -278,7 +278,7 @@ function onError(err){
                                                         <svg className="mb-3 w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span></p>
                                                     </div>
-                                                    <input id="dropzone-file" type="file" className="hidden" onChange={uploadHandler} />
+                                                    <input id="dropzone-file" type="file" className="hidden" />
                                                     </label>
                                                     {loadingUpload && <div>...Loading</div>}
                                                 </div>
